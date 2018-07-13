@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<head>
+	<meta charset="utf-8"/>
+</head>
+<body>
+
+<h1 id="beratecontent">BE Rate Content </h1>
+
+<p><img src="https://img.shields.io/github/release/billerickson/be-rate-content.svg" alt="Release" /> <img src="https://img.shields.io/badge/license-GPL--2.0%2B-red.svg?style=flat-square&maxAge=2592000" alt="License" /></p>
+
+<p><strong>Contributors:</strong> billerickson<br />
+<strong>Requires at least:</strong> 4.1<br />
+<strong>Tested up to:</strong> 4.9<br />
+<strong>Stable tag:</strong> 1.0.0<br />
+<strong>License:</strong> GPLv2 or later<br />
+<strong>License URI:</strong> http://www.gnu.org/licenses/gpl-2.0.html</p>
+
+<p>BE Rate Content is a lean plugin for allowing visitors to rate content with a thumbs up or down. It&#8217;s developer-friendly and very extensible.</p>
+
+<p>Total likes and dislikes are stored as post meta (<code>_be_rate_content_like</code> and <code>_be_rate_content_dislike</code>), and the post&#8217;s total rating (likes - dislikes) is stored as <code>_be_rate_content_total</code>. You can use this to sort content by most liked / disliked.</p>
+
+<p>This is a fork of <a href="https://github.com/billerickson/be-like-content">BE Like Content</a>, which is similar but only allows users to like content.</p>
+
+<h2 id="installation">Installation </h2>
+
+<p><a href="https://github.com/billerickson/BE-Rate-Content/archive/master.zip">Download the plugin here.</a></p>
+
+<h2 id="customization">Customization </h2>
+
+<p>In your theme, add <code>if( function_exists( 'be_rate_content' ) { be_rate_content()-&gt;display(); }</code> to display the like button. It is unstyled, so you will need to style it yourself.</p>
+
+</body>
+</html>
+

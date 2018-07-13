@@ -10,7 +10,7 @@
 
 BE Rate Content is a lean plugin for allowing visitors to rate content with a thumbs up or down. It's developer-friendly and very extensible.
 
-Total likes and dislikes are stored as post meta (`_be_rate_content_likes` and `_be_rate_content_dislikes`), and the post's total rating (likes - dislikes) is stored as `_be_content_rating`. You can use this to sort content by most liked / disliked.
+Total likes and dislikes are stored as post meta (`_be_rate_content_like` and `_be_rate_content_dislike`), and the post's total rating (likes - dislikes) is stored as `_be_rate_content_total`. You can use this to sort content by most liked / disliked.
 
 This is a fork of [BE Like Content](https://github.com/billerickson/be-like-content), which is similar but only allows users to like content.
 
