@@ -2,17 +2,16 @@
 
 jQuery(function($){
 
+	var cookieName 	= 'be_rate_content',
+		liking		= false;
+
 	// Get liked content
-	var cookieName = 'be_rate_content';
 	var likedContent = Cookies.get( cookieName );
 	if( likedContent ) {
 		likedContent = JSON.parse( likedContent );
 	} else {
 		likedContent = { like: [], dislike: [] };
 	}
-
-	console.log( likedContent );
-	console.log( likedContent.like );
 
 	// Single post, set active if already liked
 	$( '.be-rate-content' ).each( function(){
@@ -27,30 +26,30 @@ jQuery(function($){
 	        dislikeClass = 'active';
 	    }
 
-	    if( likedContent.like.indexOf( postID ) != -1 ) {
+	    if( rated( 'like', postID ) ) {
 	        $this.addClass( likeClass );
 	    }
 
-	    if( likedContent.dislike.indexOf( postID ) != -1 ) {
+	    if( rated( 'dislike', postID ) ) {
 	        $this.addClass( dislikeClass );
 	    }
 	});
 
 	// Like on click
-	var liking = false;
 	$(document).on('click', '.be-rate-content', function(e){
 		e.preventDefault();
 		var $button = $(this),
-			post_id = $button.data('postid'),
+			postID = $button.data('postid'),
 			type    = $button.data('type');
 
-		if( ! liking && -1 == likedContent.like.indexOf( post_id ) && -1 == likedContent.dislike.indexOf( post_id ) ) {
+		if( ! liking && ! rated( 'like', postID ) && ! rated( 'dislike', 'postID' ) ) {
 
 			liking = true;
 			$button.addClass('liking');
+
 			var data = {
 				action: 'be_rate_content',
-				post_id: post_id,
+				post_id: postID,
 				type: type,
 			};
 			$.post( be_rate_content.url, data, function(res){
@@ -59,16 +58,16 @@ jQuery(function($){
 					$button.siblings().addClass('disable');
 
 					var liking = false;
-					likedContent[type].push( post_id );
+					likedContent[type].push( postID );
 					Cookies.set( cookieName, JSON.stringify( likedContent ), { expires: 365 } );
-					//console.log( res );
-				} else {
-					//console.log( res );
 				}
-			}).fail(function( xhr, textStatus, e ){
-				//console.log( xhr.responseText );
 			});
 		}
 	});
+
+	// Check if already liked/disliked
+	function rated( type, postID ) {
+		return -1 !== likedContent[type].indexOf( postID );
+	}
 
 });
