@@ -90,6 +90,7 @@ final class BE_Rate_Content {
 
  		// Directory URL
  		define( 'BE_RATE_CONTENT_URL', plugin_dir_url( __FILE__ ) );
+		define( 'BE_RATE_CONTENT_DIR', plugin_dir_path( __FILE__ ) );
 	}
 
 	/**
@@ -130,6 +131,7 @@ final class BE_Rate_Content {
 	function default_settings() {
 		return array(
 			'post_types' => array( 'post' ),
+			'types'      => array( 'like', 'dislike' )
 		);
 	}
 
@@ -140,7 +142,7 @@ final class BE_Rate_Content {
 	 */
 	function scripts() {
 
-		wp_register_script( 'be-rate-content', BE_RATE_CONTENT_URL . '/assets/js/be-rate-content.min.js', array( 'jquery' ), BE_RATE_CONTENT_VERSION, true );
+		wp_register_script( 'be-rate-content', BE_RATE_CONTENT_URL . 'assets/js/be-rate-content.min.js', array( 'jquery' ), BE_RATE_CONTENT_VERSION, true );
  		wp_localize_script( 'be-rate-content', 'be_rate_content', array( 'url' => admin_url( 'admin-ajax.php' ) ) );
 
 	}
@@ -197,14 +199,12 @@ final class BE_Rate_Content {
 
 		$this->load_assets();
 
-		$types = array( 'like', 'dislike' );
-		foreach( $types as $type ) {
+		foreach( $this->settings['types'] as $type ) {
 			printf(
-				'<a href="#" class="%s" data-type="%s" data-postid="%s"><span class="icon">%s</span><span class="count">%s</span></a>',
+				'<a href="#" class="%s" data-type="%s" data-postid="%s"><span class="icon">' . $this->icon( $type ) . '</span><span class="count">%s</span></a>',
 				'be-rate-content be-rate-content-' . $type,
 				$type,
 				get_the_ID(),
-				$this->icon( $type ),
 				$this->count( $type, get_the_ID() )
 			);
 		}
@@ -220,6 +220,9 @@ final class BE_Rate_Content {
 		if( empty( $post_id ) )
 			return;
 
+		if( !in_array( $type, $this->settings['types'] ) )
+			return;
+
 		$key = '_be_rate_content_' . esc_attr( $type );
 
 		return intval( get_post_meta( $post_id, $key, true ) );
@@ -230,7 +233,7 @@ final class BE_Rate_Content {
 	 *
 	 */
 	function icon( $type = '' ) {
-		$icon_path = plugins_url( 'assets/icons/' . $type . '.svg', __FILE__ );
+		$icon_path = BE_RATE_CONTENT_DIR . 'assets/icons/' . $type . '.svg';
 		if( file_exists( $icon_path ) )
 			return file_get_contents( $icon_path );
 	}
@@ -269,14 +272,17 @@ final class BE_Rate_Content {
 			echo '<ol>';
 			while( $loop->have_posts() ): $loop->the_post();
 
-				$likes = $this->count( 'like', get_the_ID() );
-				$dislikes = $this->count( 'dislike', get_the_ID() );
+				$counts = array();
+				foreach( $this->settings['types'] as $type ) {
+					$count = $this->count( $type, get_the_ID() );
+					$counts[] = _n( $type, $type . 's', $count, 'be-rate-content' );
+				}
+
 				printf(
-					'<li><a href="%s">%s</a> (%s, %s)</li>',
+					'<li><a href="%s">%s</a> (%s)</li>',
 					get_permalink(),
 					get_the_title(),
-					$likes . ' ' . _n( 'like', 'likes', $likes, 'be-rate-content' ),
-					$dislikes . ' ' . _n( 'dislike', 'dislikes', $dislikes, 'be-rate-content' )
+					join( ', ', $counts )
 				);
 
 			endwhile;
