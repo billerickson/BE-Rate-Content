@@ -42,7 +42,7 @@ jQuery(function($){
 			postID	= $button.data('postid'),
 			type	= $button.data('type');
 
-		if( ! liking && ! rated( 'like', postID ) && ! rated( 'dislike', 'postID' ) ) {
+		if( ! liking && ! rated( 'like', postID ) && ! rated( 'dislike', postID ) ) {
 
 			liking = true;
 			$button.addClass('liking');
