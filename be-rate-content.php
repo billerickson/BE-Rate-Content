@@ -225,7 +225,7 @@ final class BE_Rate_Content {
 
 		$key = '_be_rate_content_' . esc_attr( $type );
 
-		return intval( get_post_meta( $post_id, $key, true ) );
+		return intval( get_post_meta( $post_id, sanitize_key( $key ), true ) );
 	}
 
 	/**
