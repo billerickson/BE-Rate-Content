@@ -2,7 +2,7 @@
 
 jQuery(function($){
 
-	var cookieName 	= 'be_rate_content',
+	var	cookieName 	= 'be_rate_content',
 		liking		= false;
 
 	// Get liked content
@@ -38,19 +38,19 @@ jQuery(function($){
 	// Like on click
 	$(document).on('click', '.be-rate-content', function(e){
 		e.preventDefault();
-		var $button = $(this),
-			postID = $button.data('postid'),
-			type    = $button.data('type');
+		var	$button	= $(this),
+			postID	= $button.data('postid'),
+			type	= $button.data('type');
 
 		if( ! liking && ! rated( 'like', postID ) && ! rated( 'dislike', 'postID' ) ) {
 
 			liking = true;
 			$button.addClass('liking');
 
-			var data = {
-				action: 'be_rate_content',
-				post_id: postID,
-				type: type,
+			var	data = {
+				action:		'be_rate_content',
+				post_id:	postID,
+				type:		type,
 			};
 			$.post( be_rate_content.url, data, function(res){
 				if( res.success ) {
