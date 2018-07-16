@@ -39,9 +39,16 @@
 		"sC": 3,
 		"tS": 0
 		},
+	"\/assets\/js\/be-rate-content-min.js.map": {
+		"cB": 0,
+		"ft": 8192,
+		"oA": 0,
+		"oAP": "\/assets\/js\/be-rate-content-min.js.map",
+		"oF": 0
+		},
 	"\/assets\/js\/src\/be-rate-content.js": {
 		"ft": 64,
-		"ma": 0,
+		"ma": 1,
 		"mi": 1,
 		"oA": 0,
 		"oAP": "\/assets\/js\/be-rate-content-min.js",

@@ -142,7 +142,7 @@ final class BE_Rate_Content {
 	 */
 	function scripts() {
 
-		wp_register_script( 'be-rate-content', BE_RATE_CONTENT_URL . 'assets/js/be-rate-content.min.js', array( 'jquery' ), BE_RATE_CONTENT_VERSION, true );
+		wp_register_script( 'be-rate-content', BE_RATE_CONTENT_URL . 'assets/js/be-rate-content-min.js', array( 'jquery' ), BE_RATE_CONTENT_VERSION, true );
  		wp_localize_script( 'be-rate-content', 'be_rate_content', array( 'url' => admin_url( 'admin-ajax.php' ) ) );
 
 	}
@@ -169,6 +169,7 @@ final class BE_Rate_Content {
 	function update_count() {
 
 		$post_id = intval( $_POST[ 'post_id' ] );
+		$current_type = esc_attr( $_POST[ 'type' ] );
 
 		if( ! $post_id )
 			wp_send_json_error( __( 'No Post ID', 'be-rate-content' ) );
@@ -176,14 +177,32 @@ final class BE_Rate_Content {
 		if( !in_array( get_post_type( $post_id ), $this->settings[ 'post_types' ] ) )
 			wp_send_json_error( __( 'This post type does not support likes', 'be-rate-content' ) );
 
+		if( ! $current_type )
+			wp_send_json_error( __( 'No Type', 'be-rate-content' ) );
 
-		$count = $this->count( $post_id );
-		$count++;
-		update_post_meta( $post_id, '_be_rate_content', $count );
+		if( ! in_array( $current_type, $this->settings['types'] ) )
+			wp_send_json_error( __( 'Not a valid type', 'be-rate-content' ) );
 
-		$data = $this->maybe_count( $post_id, $count );
-		wp_send_json_success( $data );
 
+		$total = $return = 0;
+		foreach( $this->settings['types'] as $type ) {
+
+			 $count = $this->count( $type, $post_id );
+			 if( $current_type == $type ) {
+			 	$count++;
+				$return = $count;
+				update_post_meta( $post_id, $this->meta_key( $type ), $count );
+			}
+
+			// @todo: refactor in a generic way in case new types are added
+			if( 'like' == $type )
+				$total += $count;
+			elseif( 'dislike' == $type )
+				$total -= $count;
+		}
+
+		update_post_meta( $post_id, $this->meta_key( 'total' ), $total );
+		wp_send_json_success( $return );
 		wp_die();
 	}
 
@@ -225,7 +244,15 @@ final class BE_Rate_Content {
 
 		$key = '_be_rate_content_' . esc_attr( $type );
 
-		return intval( get_post_meta( $post_id, sanitize_key( $key ), true ) );
+		return intval( get_post_meta( $post_id, $this->meta_key( $type ), true ) );
+	}
+
+	/**
+	 * Post Meta Key
+	 *
+	 */
+	function meta_key( $type = '' ) {
+		return sanitize_key( '_be_rate_content_' . $type );
 	}
 
 	/**
