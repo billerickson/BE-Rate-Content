@@ -5,7 +5,7 @@ jQuery(function($){
 	// Get liked content
 	var cookieName = 'be_rate_content';
 	var likedContent = Cookies.get( cookieName );
-	if( ! likedContent ) {
+ 	if( ! likedContent ) {
 		likedContent = { like: [], dislike: [] };
 	}
 

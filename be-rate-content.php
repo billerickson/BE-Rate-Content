@@ -302,7 +302,7 @@ final class BE_Rate_Content {
 				$counts = array();
 				foreach( $this->settings['types'] as $type ) {
 					$count = $this->count( $type, get_the_ID() );
-					$counts[] = _n( $type, $type . 's', $count, 'be-rate-content' );
+					$counts[] = $count . ' ' . _n( $type, $type . 's', $count, 'be-rate-content' );
 				}
 
 				printf(
