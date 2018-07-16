@@ -5,30 +5,35 @@ jQuery(function($){
 	// Get liked content
 	var cookieName = 'be_rate_content';
 	var likedContent = Cookies.get( cookieName );
- 	if( ! likedContent ) {
+	if( likedContent ) {
+		likedContent = JSON.parse( likedContent );
+	} else {
 		likedContent = { like: [], dislike: [] };
 	}
 
 	console.log( likedContent );
 	console.log( likedContent.like );
-	console.log( likedContent['like'] );
 
 	// Single post, set active if already liked
-	$('.be-rate-content').each(function(e){
-		var post_id = $(this).data('post-id');
-		var type = $(this).data('type');
-		if( 'like' == type ) {
-			if( likedContent['like'].indexOf( post_id ) != -1 )
-				$(this).addClass('active');
-			if( likedContent['dislike'].indexOf( post_id ) != -1 )
-				$(this).addClass('disable');
-		} else if( 'dislike' == type ) {
-			if( likedContent['dislike'].indexOf( post_id ) != -1 )
-				$(this).addClass('active');
-			if( likedContent['like'].indexOf( post_id ) != -1 )
-				$(this).addClass('disable');
+	$( '.be-rate-content' ).each( function(){
+	    var $this        = $( this ),
+	        postID       = $this.data( 'postid' ),
+	        type         = $this.data( 'type' ),
+	        likeClass    = 'active',
+	        dislikeClass = 'disable';
 
-		}
+	    if ( 'dislike' === type ) {
+	        likeClass    = 'disable',
+	        dislikeClass = 'active';
+	    }
+
+	    if( likedContent.like.indexOf( postID ) != -1 ) {
+	        $this.addClass( likeClass );
+	    }
+
+	    if( likedContent.dislike.indexOf( postID ) != -1 ) {
+	        $this.addClass( dislikeClass );
+	    }
 	});
 
 	// Like on click
@@ -55,7 +60,7 @@ jQuery(function($){
 
 					var liking = false;
 					likedContent[type].push( post_id );
-					Cookies.set( cookieName, likedContent, { expires: 365 } );
+					Cookies.set( cookieName, JSON.stringify( likedContent ), { expires: 365 } );
 					//console.log( res );
 				} else {
 					//console.log( res );
